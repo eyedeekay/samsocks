@@ -17,7 +17,7 @@ func main() {
 
 	// create a transport that uses SAM to dial TCP Connections
 	conf := &socks5.Config{
-		Dial: sam.DialContext,
+		Dial:     sam.DialContext,
 		Resolver: sam,
 	}
 	server, err := socks5.New(conf)
