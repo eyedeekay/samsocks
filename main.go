@@ -56,6 +56,8 @@ func main() {
 			if err != nil {
 				log.Fatal(err)
 			}
+			log.Println("Port is occupied, the SOCKS5 proxy needs a new port to be isolated correctly")
+			log.Println("SOCKS5 proxy will start on:", *addr, ":", *port)
 		}
 	}
 	i2pkeys.FakePort = true
