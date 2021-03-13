@@ -26,10 +26,9 @@ const version = "0.0.01"
 
 func main() {
 	// Create a SOCKS5 server
-	addr := flag.String("socksaddr", "127.0.0.1", "Start the SOCKS5 proxy at this address(Can use a domain)")
+	addr := flag.String("socksaddr", "127.0.0.1", "Start the SOCKS5 proxy at this address(Almost always localhost. Can use a domain)")
 	port := flag.Int("socksport", 7950, "Start the SOCKS5 proxy at this port.")
 	name := flag.String("name", "sam-socks-"+randomid(), "Name to give the I2P client(The last part is always randomized)")
-	ip := flag.String("ipaddr", "127.0.0.1", "Listen on this IP address")
 	username := flag.String("user", "", "Require a username to use the SOCKS5 Proxy.")
 	password := flag.String("pass", "", "Require a password to use the SOCKS5 Proxy.")
 	isolate := flag.Bool("isolate", true, "Enforce isolation. Works differently from torsocks.")
@@ -40,6 +39,7 @@ func main() {
 	samaddress := flag.String("address", "127.0.0.1", "Specify I2P SAM address")
 	samport := flag.Int("port", 7656, "Specify I2P SAM port")
 	flag.Parse()
+	ip := "127.0.0.1"
 	//	shell := flag.Bool("shell", false, "spawn an I2P-only shell")
 	if *version {
 		log.Println("samsocks version:", version)
@@ -70,7 +70,7 @@ func main() {
 	socks5.Dial = primary
 	socks5.Resolver = primary
 
-	server, err := socks5.NewClassicServer(*addr+":"+strconv.Itoa(*port), *ip, *username, *password, *tcpTimeout, *udpTimeout)
+	server, err := socks5.NewClassicServer(*addr+":"+strconv.Itoa(*port), ip, *username, *password, *tcpTimeout, *udpTimeout)
 	if err != nil {
 		panic(err)
 	}
