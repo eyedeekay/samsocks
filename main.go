@@ -8,8 +8,11 @@ import (
 
 	"flag"
 	"log"
+	"math/rand"
 	"net"
+	"os"
 	"strconv"
+	"time"
 )
 
 func randomid() string {
@@ -18,6 +21,8 @@ func randomid() string {
 	p := r.Intn(55534) + 10000
 	return strconv.Itoa(p)
 }
+
+const version = "0.0.01"
 
 func main() {
 	// Create a SOCKS5 server
@@ -28,12 +33,21 @@ func main() {
 	username := flag.String("user", "", "Require a username to use the SOCKS5 Proxy.")
 	password := flag.String("pass", "", "Require a password to use the SOCKS5 Proxy.")
 	isolate := flag.Bool("isolate", true, "Enforce isolation. Works differently from torsocks.")
+	version := flag.Bool("version", false, "Print the version and exit.")
+	debug := flag.Bool("debug", false, "Show detailed information about the operation.")
 	tcpTimeout := flag.Int("tcptimeout", 60000, "Set a default TCP Timeout(ms)")
 	udpTimeout := flag.Int("udptimeout", 60000, "Set a default UDP Timeout(ms)")
 	samaddress := flag.String("address", "127.0.0.1", "Specify I2P SAM address")
 	samport := flag.Int("port", 7656, "Specify I2P SAM port")
 	flag.Parse()
 	//	shell := flag.Bool("shell", false, "spawn an I2P-only shell")
+	if *version {
+		log.Println("samsocks version:", version)
+		os.Exit(0)
+	}
+	if *debug {
+		log.Println("SAM client id:", *name)
+	}
 
 	var err error
 	if *isolate {
@@ -46,7 +60,7 @@ func main() {
 	}
 	i2pkeys.FakePort = true
 
-	primary, err := sam.I2PPrimarySession(*name, *samaddress+":"+strconv.Itoa(*samport), *name)
+	primary, err := sam.I2PPrimarySession(*name, *samaddress+":"+strconv.Itoa(*samport), "")
 	if err != nil {
 		panic(err)
 	}
