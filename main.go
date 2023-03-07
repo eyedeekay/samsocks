@@ -1,8 +1,9 @@
 package main
 
 import (
-	"github.com/eyedeekay/sam3/helper"
-	"github.com/eyedeekay/sam3/i2pkeys"
+	"fmt"
+
+	sam "github.com/eyedeekay/sam3/helper"
 	"github.com/phayes/freeport"
 	"github.com/txthinking/socks5"
 
@@ -60,7 +61,7 @@ func main() {
 			log.Println("SOCKS5 proxy will start on:", *addr, ":", *port)
 		}
 	}
-	i2pkeys.FakePort = true
+	//	i2pkeys.FakePort = true
 
 	primary, err := sam.I2PPrimarySession(*name, *samaddress+":"+strconv.Itoa(*samport), "")
 	if err != nil {
@@ -74,7 +75,15 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
-	log.Println("Client Created SOCKS5 proxy at", *addr, ":", *port)
+	if *debug {
+		log.Println("Client Created SOCKS5 proxy at", *addr, ":", *port)
+	} else {
+		fmt.Printf("#! /usr/bin/env sh\n")
+		fmt.Printf("TORSOCKS_ADDR=%s\n", *addr)
+		fmt.Printf("TORSOCKS_PORT=%d\n", *port)
+		fmt.Printf("torsocks --address %s --port %d $@\n", *addr, *port)
+	}
+
 	// Create SOCKS5 proxy
 	go func() {
 		if err := server.ListenAndServe(nil); err != nil {
